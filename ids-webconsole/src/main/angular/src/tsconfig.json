@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "baseUrl": "",
+    "declaration": false,
+    "downlevelIteration": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": [
+      "es6",
+      "dom"
+    ],
+    "mapRoot": "./",
+    "module": "es2020",
+    "moduleResolution": "node",
+    "outDir": "../dist/out-tsc",
+    "sourceMap": true,
+    "target": "ES2022",
+    "typeRoots": [
+      "../node_modules/@types"
+    ],
+    "useDefineForClassFields": false
+  },
+  "files": [
+    "main.ts",
+    "polyfills.ts"
+  ],
+  "include": [
+    "**/*.ts"
+  ]
+}

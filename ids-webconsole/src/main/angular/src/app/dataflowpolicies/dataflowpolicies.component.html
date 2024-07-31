@@ -1,0 +1,36 @@
+<!-- Status cards -->
+<div class="mdl-grid">
+	<div class="mdl-card card-dark mdl-cell mdl-cell--12-col">
+		<div class="mdl-card__title">
+			<h2 class="mdl-card__title-text">Data Usage Control Policy</h2>
+		</div>
+		<div class="mdl-card__menu">
+			<!-- Right aligned menu below button -->
+			<button id="demo-menu-lower-right" class="mdl-button mdl-js-button mdl-button--icon">
+				<icon class="material-icons">more_horiz</icon>
+			</button>
+
+			<ul for="demo-menu-lower-right" class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect">
+				<li routerLink="/dataflowpolicyynew" class="mdl-menu__item">Load another policy</li>
+			</ul>
+		</div>
+		<div class="mdl-card__supporting-text">
+			<span *ngIf="!isLoaded">No policy installed. All routes are allowed.</span>
+			<div *ngIf="isLoaded">
+				<ul class="mdl-list" *ngFor="let rule of policies; trackBy: trackRules">
+					<li class="mdl-list__item mdl-list__item--two-line">
+						<span class="mdl-list__item-primary-content">
+							<span>{{ rule }}</span>
+							<span class="mdl-list__item-sub-title">Rule</span>
+						</span>
+						<span class="mdl-list__item-secondary-content">
+							<span class="mdl-list__item-secondary-info">Active</span><a
+								class="mdl-list__item-secondary-action" href="#"><icon
+									class="material-icons mdl-color-text--teal">done</icon></a>
+						</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>

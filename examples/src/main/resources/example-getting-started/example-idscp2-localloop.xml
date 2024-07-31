@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:camel="http://camel.apache.org/schema/spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://camel.apache.org/schema/spring
+          http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer"/>
+
+    <bean class="org.apache.camel.support.jsse.TrustManagersParameters" id="routeTrustManagers">
+        <property name="keyStore">
+            <camel:keyStoreParameters password="${key-stores.password}" resource="${key-stores.truststore-resource}"/>
+        </property>
+    </bean>
+    <!-- Define TLS configuration for data consumer -->
+    <bean class="org.apache.camel.support.jsse.SSLContextParameters" id="serverSslContext">
+        <property name="keyManagers">
+            <bean class="org.apache.camel.support.jsse.KeyManagersParameters">
+                <property name="keyStore">
+                    <camel:keyStoreParameters password="${key-stores.password}"
+                                              resource="${key-stores.server-resource}"/>
+                </property>
+                <property name="keyPassword" value="${key-stores.password}"/>
+            </bean>
+        </property>
+        <property name="trustManagers" ref="routeTrustManagers"/>
+    </bean>
+    <!-- Define TLS configuration for data provider -->
+    <bean class="org.apache.camel.support.jsse.SSLContextParameters" id="clientSslContext">
+        <property name="keyManagers">
+            <bean class="org.apache.camel.support.jsse.KeyManagersParameters">
+                <property name="keyStore">
+                    <camel:keyStoreParameters password="${key-stores.password}"
+                                              resource="${key-stores.client-resource}"/>
+                </property>
+                <property name="keyPassword" value="${key-stores.password}"/>
+            </bean>
+        </property>
+        <property name="trustManagers" ref="routeTrustManagers"/>
+    </bean>
+
+    <!-- Routes -->
+    <camelContext xmlns="http://camel.apache.org/schema/spring">
+
+        <route id="sendTime">
+            <from uri="timer://tempPerSecond?fixedRate=true&amp;period=10000"/>
+            <setBody>
+                <simple>Message at $simple{date:now:yyyy-MM-dd HH:mm:ss}</simple>
+            </setBody>
+            <log message="Sending message body &quot;${body}&quot;..."/>
+            <to uri="idscp2client://tc-core-server:9292/?sslContextParameters=#clientSslContext" />
+        </route>
+
+        <route id="receiveTime">
+            <from uri="idscp2server://0.0.0.0:9292/?sslContextParameters=#serverSslContext"/>
+            <log message="Received via IDS protocol: ${body}"/>
+        </route>
+
+    </camelContext>
+
+</beans>

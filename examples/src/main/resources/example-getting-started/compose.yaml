@@ -1,0 +1,28 @@
+version: '3'
+services:
+
+  tc-core:
+    image: fraunhoferaisec/trusted-connector-core:${EXAMPLE_TAG:-develop}
+    tty: true
+    stdin_open: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ../etc/application.yml:/root/etc/application.yml
+      - ../deploy/allow-all-flows.pl:/root/deploy/allow-all-flows.pl
+      - ../etc/settings.mapdb:/root/etc/settings.mapdb
+      - ../etc/server-keystore.p12:/root/etc/server-keystore.p12
+      - ../etc/client-keystore.p12:/root/etc/client-keystore.p12
+      - ../etc/truststore.p12:/root/etc/truststore.p12
+      - ../etc/tls.properties:/root/etc/tls.properties
+      - ./example-idscp2-localloop.xml:/root/deploy/example-idscp2-localloop.xml
+    ports:
+      - "8080:8080"
+    networks:
+      example-internal:
+        aliases:
+          - tc-core-server
+          - tc-core-client
+
+networks:
+  example-internal:
+    driver: bridge

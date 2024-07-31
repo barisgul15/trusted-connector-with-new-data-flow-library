@@ -1,0 +1,21 @@
+version: '3'
+services:
+  # Trusted Connector build container
+  build-container:
+    image: fraunhoferaisec/docker-build:2.0
+    tty: true
+    stdin_open: true
+    environment:
+      - 'PROJECT_DIR=/core-platform'
+      - 'GRADLE_DIR=/.gradle'
+      - 'M2_DIR=/.m2'
+    volumes:
+      - ..:/core-platform
+      - /var/run/docker.sock:/var/run/docker.sock
+      - tc-build-gradle:/.gradle
+      - tc-build-m2:/.m2
+      - tc-build-build:/build
+volumes:
+  tc-build-gradle:
+  tc-build-m2:
+  tc-build-build:
